@@ -1,0 +1,86 @@
+## Automate AWS infrastructure Provisioning using boto3
+
+# https://www.youtube.com/playlist?list=PL2qzCKTbjutJ1zZFYNImrHNbzs6XgIHbI
+
+# Boto3 is the python SDK for AWS
+# Boto3 is written on top of BotoCore which is low level interface to the AWS API
+  - Botocore (Written in Python) is also installed when you install AWS CLI (Bases of AWS CLI)
+
+
+# Basic steps to work with AWS services using boto3
+
+# Create an object of the service you would like to work with.
+# Provide credential: Access Keys & Secret Access keys, which can be configured used using AWS configure,
+# This is information is store in ~/.aws/credentials file
+
+# s3_obj = boto3.resource('s3')
+
+
+## Core concept boto3
+
+1. Resource - Higher level object to access AWS service
+   - Each Operation is a object operation, and not all the operations are available with resource.
+2. Client - Low Level object  to access AWS service
+  - All operations are available (i.e. via Dictionary operations)
+3. Meta -  Object to enter into client object from resource object
+4. Sessions - It stores configuration state and allows you to create AWS services objects and client objects.
+   (object to get connected with particular AWS account or IAM User account) --> From here you can create
+   resource or client as it (session) stores the configuration state.
+5. Collections - A tool to iterate and manipulate groups of resources.
+S3 bucket creates a iterator, which will help iterate over all the objects in the bucket.
+
+6. Paginators: Automatic paging of response (S3 has 3000 objects: - you are trying to fetch all objects,
+using the S3 api call, the API call/request can only fetch 1000 object at a time, so you will have to use
+paginators  - Paginator will create three pages, each fetching 1000 objects!!
+
+7. Waiters - Way to block until a certain state has been reached.
+
+Steps:
+
+1. Create a session object (with what previlages you will create resource ?)
+2. Create resource or client object
+
+
+Q: How to create session ?
+
+- Session stores configuration information (primarily credentials of AWS root account or AWS IAM user account
+and select region)
+- This allows you to create resource and client objects
+
+Ways to create session:
+1. Without session method
+2. With session method
+
+
+a. Without creating session method
+
+import boto3
+S3_re_ob = boto3.resource('s3', aws_access_key_id=ACCESS_KEY, ---> 'service_name' = 's3'
+                        aws_secret_access_key=SECRET_KEY,
+                        region_name= REGION_NAME
+           )
+s3_cli_ob = boto3.client('s3', aws_access_key_id=ACCESS_KEY,   ---> 'service_name' = 's3'
+                         aws_secret_access_key=SECRET_KEY,
+                         region_name=REGION_NAME
+           )
+
+b. With Session Method
+
+import boto3
+session = boto3.Session(aws_access_key_id=ACCESS_KEY,    ---> Here we are not creating any service
+                        aws_secret_access_key=SECRET_KEY,
+                        region_name= REGION_NAME
+                        )
+S3_re_ob = session.resource('s3') --> resource object
+S3_cli_ob = session.client('s3') --> client object
+
+===========================================================
+A simple way to remember session, resource (Object), client (Object)
+
+1. AWS managment console page ---> Session (Provide credential in boto3)
+2. Selecting services - S3 management console page ---> resource or client object
+
+-----------------------------------------------
+
+
+
